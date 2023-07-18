@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>resources/phone.ico</file>
+    </qresource>
+    <qresource prefix="/sound"/>
+</RCC>

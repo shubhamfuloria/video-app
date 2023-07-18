@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>resources/phone.ico</file>
+        <file>resources/callDisconnect.jpg</file>
+        <file>resources/callDisconnect.ico</file>
+        <file>resources/hang.png</file>
+        <file>resources/switch-camera.png</file>
+        <file>resources/mic.png</file>
+        <file>resources/no-cameras.png</file>
+    </qresource>
+    <qresource prefix="/music">
+        <file>resources/ringtone.mp3</file>
+    </qresource>
+</RCC>
