@@ -1,5 +1,6 @@
 #include "call.h"
 #include "ui_call.h"
+#include "vidwin.h"
 
 Call::Call(QString acc_id, QString call_id, QWidget *parent) :
     QWidget(parent),
@@ -11,6 +12,17 @@ Call::Call(QString acc_id, QString call_id, QWidget *parent) :
 
     ui->label->setText("Incoming Call from " + acc_id);
 
+}
+
+Ui::Call * Call::getUi()
+{
+        return ui;
+}
+
+void Call::addVideo(VidWin* video)
+{
+    video->putIntoLayout(ui->videoBox);
+//    ui->videoBox->addWidget(call);
 
 }
 

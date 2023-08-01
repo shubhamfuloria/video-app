@@ -36,6 +36,10 @@ public:
 
     QList<User> users;
     pjsua_acc_id account_id;
+    QList<QString> m_current_calls;
+    QList<VidWin*> m_current_videos;
+
+
 
     VidWin* video_prev;
     VidWin* video_;
@@ -43,6 +47,8 @@ public:
     void test();
 
     Call* call;
+
+    void show_incoming_call(QString);
 
 
 

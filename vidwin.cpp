@@ -63,6 +63,7 @@ bool VidWin::event(QEvent *e)
 
     case QEvent::Resize:
         set_size();
+
         break;
 
     case QEvent::ParentChange:
@@ -129,8 +130,8 @@ void VidWin::set_size()
 
     HWND w = (HWND)hwnd.info.win.hwnd;
     QRect qr = rect();
-    UINT swp_flag = SWP_NOACTIVATE;
-    SetWindowPos(w, HWND_TOP, 0, 0, qr.width(), qr.height(), swp_flag);
+        UINT swp_flag = SWP_NOACTIVATE;
+        SetWindowPos(w, HWND_TOP, 0, 0, qr.width(), qr.height(), swp_flag);
     TRACE_("%p new size = %dx%d", w, qr.width(), qr.height());
 }
 

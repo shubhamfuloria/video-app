@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <pjsua.h>
+#include "vidwin.h"
 
 namespace Ui {
 class Call;
@@ -18,9 +19,16 @@ public:
 
     QString m_current_call_id;
     QString m_current_acc_id;
+    Ui::Call *ui;
+
+    Ui::Call* getUi();
+    void addVideo(VidWin*);
+
 signals:
     void sig_call_pickedUp();
     void sig_call_hangup();
+
+
 
 private slots:
     void on_pb_hangCall_clicked();
@@ -28,8 +36,8 @@ private slots:
     void on_pb_pickCall_clicked();
 
     void init_video_win();
-private:
-    Ui::Call *ui;
+
+
 };
 
 #endif // CALL_H

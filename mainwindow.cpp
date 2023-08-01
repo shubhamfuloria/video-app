@@ -8,6 +8,8 @@
 #include <qthread.h>
 #include <QAudioOutput>
 #include <call.h>
+#include <QLabel>
+#include <QPushButton>
 
 static MainWindow* main_instance;
 
@@ -39,8 +41,11 @@ MainWindow::MainWindow(QWidget *parent)
         qFatal("Unable to initialize sip stack");
     }
     video_ = NULL;
+
     connect(this, SIGNAL(sig_incoming_call(QString, QString)), this, SLOT(handleCall(QString, QString)));
+
     connect(this, SIGNAL(sig_init_video_win(int)), this, SLOT(initVideoWin(int)));
+
 }
 
 MainWindow::~MainWindow()
@@ -60,7 +65,8 @@ void MainWindow::initVideoWin(pjsua_call_id call_id)
 //    delete video_;
     video_ = NULL;
 
-    pjsua_call_get_info(call_id, &ci);
+//   making full screen
+
     for (i = 0; i < ci.media_cnt; ++i) {
         if ((ci.media[i].type == PJMEDIA_TYPE_VIDEO) &&
             (ci.media[i].dir & PJMEDIA_DIR_DECODING))
@@ -68,9 +74,35 @@ void MainWindow::initVideoWin(pjsua_call_id call_id)
             pjsua_vid_win_info wi;
             pjsua_vid_win_get_info(ci.media[i].stream.vid.win_in, &wi);
 
-            video_= new VidWin(&wi.hwnd);
+//            video_= new VidWin(&wi.hwnd);
+            VidWin* vid = new VidWin(&wi.hwnd);
+
+//            if(m_current_calls.length() >= 1) {
+//                qDebug() << "********ADDING TO CONFERENCE*******\n\n\n\n";
+//                //make conference
+//                pjsua_call_id call_1_id = m_current_calls.at(0).toInt();
+
+//                int call_1_dec_port = pjsua_call_get_vid_conf_port(call_1_id, PJMEDIA_DIR_DECODING);
+//                int call_1_enc_port = pjsua_call_get_vid_conf_port(call_1_id, PJMEDIA_DIR_ENCODING);
+
+//                int call_2_dec_port = pjsua_call_get_vid_conf_port(call_id, PJMEDIA_DIR_DECODING);
+//                int call_2_enc_port = pjsua_call_get_vid_conf_port(call_id, PJMEDIA_DIR_ENCODING);
+
+
+//                pj_status_t status;
+//                status = pjsua_vid_conf_connect(call_1_dec_port, call_2_enc_port, NULL);
+//                status = pjsua_vid_conf_connect(call_2_dec_port, call_1_enc_port, NULL);
+//                return;
+//            }
+
+            m_current_videos.append(vid);
             qDebug() << "$$$$$$$$$$$$$$";
-            video_->putIntoLayout(ui->mainLayout);
+//            video_->putIntoLayout(ui->mainLayout);
+            QWidget* w = new QWidget;
+            QBoxLayout* layout = new QHBoxLayout(w);
+//            video_->putIntoLayout(layout);
+           vid->putIntoLayout(layout);
+            w->show();
 
             break;
         }
@@ -112,23 +144,68 @@ void on_call_media_state(pjsua_call_id call_id)
     }
 }
 
+
+//temporary function to show incoming call dialog
+
+void MainWindow::show_incoming_call(QString call_id)
+{
+
+    QWidget* incomingCall = new QWidget();
+    QBoxLayout* vLayout = new QVBoxLayout;
+
+
+    incomingCall->setLayout(vLayout);
+    vLayout->addWidget(new QLabel("Incoming Call..."));
+
+    QBoxLayout* hLayout = new QHBoxLayout;
+    QPushButton* acceptBtn = new QPushButton("Accept");
+
+    connect(acceptBtn, &QPushButton::clicked, this, [this, call_id, incomingCall]() {
+        pjsua_call_setting call_conf;
+        pjsua_call_setting_default(&call_conf);
+        call_conf.vid_cnt = PJ_TRUE;
+        pjsua_call_answer2(call_id.toInt(), &call_conf, 200, NULL, NULL);
+        m_current_calls.append(call_id);
+        incomingCall->hide();
+    });
+
+    QPushButton* rejectBtn = new QPushButton("Reject");
+    connect(rejectBtn, &QPushButton::clicked, this, [call_id, &incomingCall]() {
+        pjsua_call_hangup(call_id.toInt(), 603, NULL, NULL);
+        incomingCall->hide();
+    });
+
+
+    hLayout->addWidget(acceptBtn);
+    hLayout->addWidget(rejectBtn);
+    vLayout->addLayout(hLayout);
+
+    incomingCall->show();
+
+    qDebug() << "Activated new Window";
+}
+
 void MainWindow::handleCall(QString acc_id, QString call_id)
 {
-    this->call = new Call(acc_id, call_id);
-    ringtone->play();
+    show_incoming_call(call_id);
+//    this->call = new Call(acc_id, call_id);
 
-    ui->mainLayout->addWidget(call);
+//    show_incoming_call();
+
+//    ringtone->play();
+//    call->show();
 
 
-    connect(this->call, &Call::sig_call_pickedUp, this, [this]() {
-        ringtone->stop();
-    });
+//    connect(this->call, &Call::sig_call_pickedUp, this, [this]() {
+//        ringtone->stop();
+//        call->addVideo(video_);
+//    });
 
-    connect(this->call, &Call::sig_call_hangup, this, [=]() {
-        ringtone->stop();
-        ui->mainLayout->removeWidget(call);
-        delete call;
-    });
+//    connect(this->call, &Call::sig_call_hangup, this, [=]() {
+//        ringtone->stop();
+//        ui->mainLayout->removeWidget(call);
+//        delete call;
+//    });
 
 }
 

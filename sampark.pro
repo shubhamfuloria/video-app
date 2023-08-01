@@ -57,8 +57,14 @@ DEPENDPATH += $$PWD/../../../../SDL2/lib/x64
 
 LIBS += Iphlpapi.lib  dsound.lib \
         dxguid.lib netapi32.lib mswsock.lib ws2_32.lib odbc32.lib \
-        odbccp32.lib ole32.lib user32.lib gdi32.lib advapi32.lib oleaut32.lib
+        odbccp32.lib ole32.lib user32.lib gdi32.lib advapi32.lib \
+        oleaut32.lib
 
 RESOURCES += \
   resources.qrc
 
+
+unix|win32: LIBS += -L$$PWD/../../Downloads/SDL2-2.28.1/lib/x64/ -lSDL2
+
+INCLUDEPATH += $$PWD/../../Downloads/SDL2-2.28.1/include
+DEPENDPATH += $$PWD/../../Downloads/SDL2-2.28.1/include
