@@ -8,6 +8,8 @@
 #include <qthread.h>
 #include <QAudioOutput>
 #include <call.h>
+#include <QLabel>
+#include <QPushButton>
 
 static MainWindow* main_instance;
 
@@ -68,10 +70,16 @@ void MainWindow::initVideoWin(pjsua_call_id call_id)
             pjsua_vid_win_info wi;
             pjsua_vid_win_get_info(ci.media[i].stream.vid.win_in, &wi);
 
-            video_= new VidWin(&wi.hwnd);
+//            video_= new VidWin(&wi.hwnd);
             qDebug() << "$$$$$$$$$$$$$$";
-            video_->putIntoLayout(ui->mainLayout);
+//            video_->putIntoLayout(ui->mainLayout);
 
+            VidWin* vid = new VidWin(&wi.hwnd);
+
+            QWidget* vid_screen = new QWidget;
+            QBoxLayout* layout = new QHBoxLayout(vid_screen);
+
+            vid->putIntoLayout(layout);
             break;
         }
     }
@@ -114,23 +122,37 @@ void on_call_media_state(pjsua_call_id call_id)
 
 void MainWindow::handleCall(QString acc_id, QString call_id)
 {
-    this->call = new Call(acc_id, call_id);
-    ringtone->play();
+    QWidget* incoming_call_box = new QWidget;
 
-    ui->mainLayout->addWidget(call);
+    QBoxLayout* vLayout = new QVBoxLayout(incoming_call_box);
+    QLabel* label = new QLabel("Incoming call ...");
 
 
-    connect(this->call, &Call::sig_call_pickedUp, this, [this]() {
-        ringtone->stop();
+    QBoxLayout* hLayout = new QHBoxLayout();
+
+    QPushButton* acceptBtn = new QPushButton("Accept");
+    QPushButton* rejectBtn = new QPushButton("Reject");
+
+    hLayout->addWidget(acceptBtn);
+    hLayout->addWidget(rejectBtn);
+
+    vLayout->addWidget(label);
+    vLayout->addLayout(hLayout);
+
+
+    connect(acceptBtn, &QPushButton::clicked, this, [this, call_id, incoming_call_box]() {
+        pjsua_call_setting call_conf;
+        pjsua_call_setting_default(&call_conf);
+        call_conf.vid_cnt = PJ_TRUE;
+        pjsua_call_answer2(call_id.toInt(), &call_conf, 200, NULL, NULL);
+        incoming_call_box->hide();
     });
 
-    connect(this->call, &Call::sig_call_hangup, this, [=]() {
-        ringtone->stop();
-        ui->mainLayout->removeWidget(call);
-        delete call;
-    });
+    connect(rejectBtn, &QPushButton, click)
 
+    incoming_call_box->show();
 }
+
 
 
 void MainWindow::handleIncomingCall(pjsua_acc_id acc_id, pjsua_call_id call_id, pjsip_rx_data *rdata)
