@@ -70,6 +70,15 @@ void MainWindow::initVideoWin(pjsua_call_id call_id)
             pjsua_vid_win_info wi;
             pjsua_vid_win_get_info(ci.media[i].stream.vid.win_in, &wi);
 
+
+            pjsua_vid_win_id win_id = pjsua_call_get_vid_win(call_id);
+//            pjsua_vid_win_set_fullscreen(win_id, PJMEDIA_VID_DEV_FULLSCREEN);
+
+            pjmedia_rect_size* size = new pjmedia_rect_size();
+            size->h = 720;
+            size->w = 1280;
+//            pjsua_vid_win_set_size(win_id, size);
+
 //            video_= new VidWin(&wi.hwnd);
             qDebug() << "$$$$$$$$$$$$$$";
 //            video_->putIntoLayout(ui->mainLayout);
@@ -78,8 +87,8 @@ void MainWindow::initVideoWin(pjsua_call_id call_id)
 
             QWidget* vid_screen = new QWidget;
             QBoxLayout* layout = new QHBoxLayout(vid_screen);
-
             vid->putIntoLayout(layout);
+            vid_screen->show();
             break;
         }
     }
@@ -148,7 +157,9 @@ void MainWindow::handleCall(QString acc_id, QString call_id)
         incoming_call_box->hide();
     });
 
-    connect(rejectBtn, &QPushButton, click)
+    connect(rejectBtn, &QPushButton::clicked, this, [this, call_id, incoming_call_box]() {
+//        pjsua_call_hangup(call_id, 603, "Declined", NULL);
+    });
 
     incoming_call_box->show();
 }

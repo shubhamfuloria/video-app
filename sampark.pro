@@ -34,17 +34,17 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-LIBS += -L$$PWD/../pjproject-2.13.1/lib/ -llibpjproject-x86_64-x64-vc14-Debug
+LIBS += -L$$PWD/../../pjproject-2.13.1/lib/ -llibpjproject-x86_64-x64-vc14-Debug
 
-INCLUDEPATH += $$PWD/../pjproject-2.13.1/pjsip/include
-INCLUDEPATH += $$PWD/../pjproject-2.13.1/pjlib/include
-INCLUDEPATH += $$PWD/../pjproject-2.13.1/pjlib-util/include
-INCLUDEPATH += $$PWD/../pjproject-2.13.1/pjmedia/include
-INCLUDEPATH += $$PWD/../pjproject-2.13.1/pjnath/include
+INCLUDEPATH += $$PWD/../../pjproject-2.13.1/pjsip/include
+INCLUDEPATH += $$PWD/../../pjproject-2.13.1/pjlib/include
+INCLUDEPATH += $$PWD/../../pjproject-2.13.1/pjlib-util/include
+INCLUDEPATH += $$PWD/../../pjproject-2.13.1/pjmedia/include
+INCLUDEPATH += $$PWD/../../pjproject-2.13.1/pjnath/include
 
-DEPENDPATH += $$PWD/../pjproject-2.13.1/
+DEPENDPATH += $$PWD/../../pjproject-2.13.1/
 
-unix|win32: LIBS += -L$$PWD/../openh264-2.3.1/bin/x64/Release/ -lopenh264
+unix|win32: LIBS += -L$$PWD/../../openh264-2.3.1/bin/x64/Release/ -lopenh264
 
 INCLUDEPATH += $$PWD/../openh264-2.3.1/bin/x64/Release
 DEPENDPATH += $$PWD/../openh264-2.3.1/bin/x64/Release
@@ -62,3 +62,8 @@ LIBS += Iphlpapi.lib  dsound.lib \
 RESOURCES += \
   resources.qrc
 
+
+win32: LIBS += -L$$PWD/../../../../../SDL2/lib/x64/ -lSDL2
+
+INCLUDEPATH += $$PWD/../../../../../SDL2/include
+DEPENDPATH += $$PWD/../../../../../SDL2/include
